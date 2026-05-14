@@ -22,13 +22,26 @@ async def transcribe_and_summarize(file_path: str, filename: str) -> dict:
 
     suffix = Path(filename).suffix.lower()
     mime_map = {
-        ".mp3": "audio/mpeg",
+        ".mp3": "audio/mp3",
+        ".mpga": "audio/mpga",
+        ".mpeg": "audio/mpeg",
         ".wav": "audio/wav",
-        ".m4a": "audio/mp4",
+        ".m4a": "audio/m4a",
+        ".mp4": "audio/mp4",
         ".ogg": "audio/ogg",
         ".webm": "audio/webm",
+        ".flac": "audio/flac",
+        ".aac": "audio/aac",
+        ".aiff": "audio/aiff",
+        ".opus": "audio/opus",
+        ".pcm": "audio/pcm",
     }
-    mime_type = mime_map.get(suffix, "audio/mpeg")
+    mime_type = mime_map.get(suffix)
+    if mime_type is None:
+        supported = ", ".join(sorted(mime_map.keys()))
+        raise ValueError(
+            f"Unsupported audio format '{suffix}'. Supported formats: {supported}"
+        )
 
     # Run blocking SDK calls in a thread pool to keep FastAPI async
     loop = asyncio.get_event_loop()
