@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { Mic, Upload, RotateCcw, Zap } from "lucide-react";
+import { Mic, Upload, RotateCcw, Zap, ChevronDown } from "lucide-react";
 import AudioRecorder from "@/components/AudioRecorder";
 import FileUploader from "@/components/FileUploader";
 import TranscriptCard from "@/components/TranscriptCard";
@@ -85,7 +85,7 @@ export default function HomePage() {
           </div>
 
           {/* Provider selector */}
-          {/* <div className="relative">
+          <div className="relative">
             <select
               id="provider-selector"
               value={provider}
@@ -96,8 +96,8 @@ export default function HomePage() {
               <option value="gemini">⚡ Gemini 1.5 Flash</option>
               <option value="huggingface">🤗 Hugging Face</option>
             </select>
-            <ChevronDown className="abso/lute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-secondary)] pointer-events-none" />
-          </div> */}
+            {/* <ChevronDown className="abso/lute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-secondary)] pointer-events-none" /> */}
+          </div>
         </div>
       </header>
 
