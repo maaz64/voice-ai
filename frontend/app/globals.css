@@ -186,3 +186,20 @@ body {
   border: 1px solid rgba(16, 185, 129, 0.3);
   color: #6ee7b7;
 }
+
+/* Custom dropdown animation */
+@keyframes dropdownIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.dropdown-menu {
+  animation: dropdownIn 0.15s ease-out;
+}
+

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { Mic, Upload, RotateCcw, Zap, ChevronDown } from "lucide-react";
 import AudioRecorder from "@/components/AudioRecorder";
 import FileUploader from "@/components/FileUploader";
@@ -13,6 +13,11 @@ type Tab = "record" | "upload";
 type Provider = "gemini" | "huggingface";
 type Toast = { id: number; type: "error" | "success"; message: string };
 
+const PROVIDERS: { value: Provider; label: string; icon: string }[] = [
+  { value: "gemini", label: "Gemini 1.5 Flash", icon: "⚡" },
+  { value: "huggingface", label: "Hugging Face", icon: "🤗" },
+];
+
 let toastId = 0;
 
 export default function HomePage() {
@@ -22,6 +27,21 @@ export default function HomePage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [result, setResult] = useState<TranscribeResult | null>(null);
   const [toasts, setToasts] = useState<Toast[]>([]);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const activeProvider = PROVIDERS.find((p) => p.value === provider)!;
 
   const addToast = useCallback((type: "error" | "success", message: string) => {
     const id = ++toastId;
@@ -85,18 +105,47 @@ export default function HomePage() {
           </div>
 
           {/* Provider selector */}
-          <div className="relative">
-            <select
+          <div className="relative" ref={dropdownRef}>
+            <button
               id="provider-selector"
-              value={provider}
-              onChange={(e) => setProvider(e.target.value as Provider)}
+              type="button"
+              onClick={() => !isProcessing && setDropdownOpen((prev) => !prev)}
               disabled={isProcessing}
-              className="appearance-none bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-primary)] text-sm rounded-lg px-4 py-2 pr-8 cursor-pointer focus:outline-none focus:border-violet-500 transition-colors disabled:opacity-50"
+              className="flex items-center gap-2 bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-primary)] text-sm rounded-lg px-3 py-2 cursor-pointer focus:outline-none focus:border-violet-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed hover:border-[var(--border-hover)]"
             >
-              <option value="gemini">⚡ Gemini 1.5 Flash</option>
-              <option value="huggingface">🤗 Hugging Face</option>
-            </select>
-            {/* <ChevronDown className="abso/lute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-secondary)] pointer-events-none" /> */}
+              <span className="text-base leading-none">{activeProvider.icon}</span>
+              <span className="hidden sm:inline font-medium">{activeProvider.label}</span>
+              <ChevronDown className={`w-4 h-4 text-[var(--text-secondary)] transition-transform duration-200 ${dropdownOpen ? "rotate-180" : ""}`} />
+            </button>
+
+            {/* Dropdown menu */}
+            {dropdownOpen && (
+              <div className="dropdown-menu absolute right-0 mt-2 w-52 bg-[var(--bg-card)] border border-[var(--border)] rounded-xl shadow-2xl shadow-black/40 overflow-hidden z-[60]">
+                {PROVIDERS.map((p) => (
+                  <button
+                    key={p.value}
+                    type="button"
+                    onClick={() => {
+                      setProvider(p.value);
+                      setDropdownOpen(false);
+                    }}
+                    className={`w-full flex items-center gap-3 px-4 py-3 text-sm text-left transition-colors
+                      ${provider === p.value
+                        ? "bg-violet-500/15 text-violet-300"
+                        : "text-[var(--text-primary)] hover:bg-[var(--bg-card-hover)]"
+                      }`}
+                  >
+                    <span className="text-lg leading-none">{p.icon}</span>
+                    <span className="font-medium">{p.label}</span>
+                    {provider === p.value && (
+                      <svg className="w-4 h-4 ml-auto text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </header>
