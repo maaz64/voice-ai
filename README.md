@@ -1,230 +1,85 @@
 # 🎙️ VoiceScribe AI
 
-**Audio Transcription & Summarization** powered by Google Gemini and Hugging Face.
+Audio transcription and summarization app powered by **Google Gemini** and **Hugging Face** (Whisper + BART).
 
-Record from your microphone or upload audio files — get instant word-for-word transcripts and AI-generated summaries.
-
----
-
-## 📋 Overview
-
-| Feature | Details |
-|---|---|
-| 🎤 Live Recording | Browser mic via MediaRecorder API |
-| 📂 File Upload | `.mp3`, `.wav`, `.m4a`, `.ogg`, `.webm` (max 25MB) |
-| 📝 Transcription | Word-for-word transcript |
-| 🤖 Summarization | 3-5 sentence AI summary |
-| ⬇️ Downloads | Export transcript & summary as `.txt` |
-| 🔄 Providers | Gemini 1.5 Flash · Whisper + BART (HuggingFace) |
+Record from your microphone or upload an audio file → get a full transcript and an AI-generated summary.
 
 ---
 
-## 🏗️ Tech Stack
+## Features
+
+- 🎤 **Live recording** — record directly from your browser mic
+- 📂 **File upload** — `.mp3`, `.wav`, `.m4a`, `.ogg`, `.webm` (up to 25 MB)
+- 📝 **Transcription** — word-for-word transcript
+- 🤖 **Summarization** — 3–5 sentence AI summary
+- ⬇️ **Download** — export transcript & summary as `.txt`
+- 🔄 **Two AI providers** — choose between Gemini or Hugging Face
+
+---
+
+## Tech Stack
 
 | Layer | Technology |
 |---|---|
 | Frontend | Next.js 14, React 18, TypeScript, Tailwind CSS |
 | Backend | FastAPI, Python 3.12, Uvicorn |
-| AI Models | Google Gemini 1.5 Flash, HuggingFace (Whisper + BART) |
-| Containerization | Docker, Docker Compose |
+| AI | Google Gemini 1.5 Flash, Hugging Face (Whisper + BART) |
 
 ---
 
-## 🔧 Prerequisites
+## Prerequisites
 
-- **Docker** & **Docker Compose** (for containerized setup)
-- **Node.js** 18+ (for local frontend development)
-- **Python** 3.10+ (for local backend development)
-- A **Gemini API key** from [aistudio.google.com](https://aistudio.google.com/app/apikey)
-- *(Optional)* A **Hugging Face token** from [huggingface.co/settings/tokens](https://huggingface.co/settings/tokens)
-
----
-
-## 🐳 Docker Setup (Recommended)
-
-### Quick Start — Run Both Servers with One Command
-
-```bash
-# 1. Clone the repo
-git clone https://github.com/maaz64/voice-ai.git
-cd voice-ai
-
-# 2. Create the backend .env file
-cp backend/.env.example backend/.env
-# Edit backend/.env and add your API keys:
-#   GEMINI_API_KEY=your_gemini_key
-#   HUGGINGFACE_API_TOKEN=your_hf_token (optional)
-
-# 3. Build and run both services
-docker compose up --build
-```
-
-> Frontend → `http://localhost:3000`
-> Backend  → `http://localhost:8000`
-> API Docs → `http://localhost:8000/docs`
-
-### Docker Compose Commands
-
-```bash
-# Build and start all services (foreground)
-docker compose up --build
-
-# Build and start in detached/background mode
-docker compose up --build -d
-
-# View running containers
-docker compose ps
-
-# View logs for all services
-docker compose logs
-
-# View logs for a specific service
-docker compose logs backend
-docker compose logs frontend
-
-# Follow logs in real-time
-docker compose logs -f
-
-# Stop all services
-docker compose down
-
-# Stop and remove volumes
-docker compose down -v
-
-# Rebuild a single service
-docker compose up --build backend
-docker compose up --build frontend
-
-# Restart services
-docker compose restart
-
-# Restart a specific service
-docker compose restart backend
-docker compose restart frontend
-```
+- **Node.js** 18 or higher — [nodejs.org](https://nodejs.org)
+- **Python** 3.10 or higher — [python.org](https://www.python.org/downloads/)
+- A **Gemini API key** — [aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey)
+- *(Optional)* A **Hugging Face token** — [huggingface.co/settings/tokens](https://huggingface.co/settings/tokens)
 
 ---
 
-### 🔨 Build Docker Images Individually
+## Getting Started
 
-#### Backend Image
-
-```bash
-# Build
-docker build -t voicescribe-backend ./backend
-
-# Run
-docker run -d \
-  --name voicescribe-backend \
-  -p 8000:8000 \
-  --env-file ./backend/.env \
-  voicescribe-backend
-
-# Run with inline env vars (alternative)
-docker run -d \
-  --name voicescribe-backend \
-  -p 8000:8000 \
-  -e GEMINI_API_KEY=your_gemini_key \
-  -e HUGGINGFACE_API_TOKEN=your_hf_token \
-  -e ALLOWED_ORIGINS=http://localhost:3000 \
-  voicescribe-backend
-```
-
-#### Frontend Image
-
-```bash
-# Build (pass backend URL as build arg)
-docker build -t voicescribe-frontend \
-  --build-arg NEXT_PUBLIC_API_URL=http://localhost:8000 \
-  ./frontend
-
-# Run
-docker run -d \
-  --name voicescribe-frontend \
-  -p 3000:3000 \
-  voicescribe-frontend
-```
-
-### 🛠️ Common Docker Commands
-
-```bash
-# List all running containers
-docker ps
-
-# List all containers (including stopped)
-docker ps -a
-
-# Stop a container
-docker stop voicescribe-backend
-docker stop voicescribe-frontend
-
-# Start a stopped container
-docker start voicescribe-backend
-docker start voicescribe-frontend
-
-# Remove a container
-docker rm voicescribe-backend
-docker rm voicescribe-frontend
-
-# Remove an image
-docker rmi voicescribe-backend
-docker rmi voicescribe-frontend
-
-# View container logs
-docker logs voicescribe-backend
-docker logs voicescribe-frontend
-
-# Follow container logs in real-time
-docker logs -f voicescribe-backend
-
-# Open a shell inside a running container
-docker exec -it voicescribe-backend /bin/bash
-docker exec -it voicescribe-frontend /bin/sh
-
-# Inspect a container
-docker inspect voicescribe-backend
-
-# Prune unused images and containers
-docker system prune -f
-```
-
----
-
-## 🚀 Local Setup (Without Docker)
-
-### 1. Clone / Navigate to the project
+### 1. Clone the repo
 
 ```bash
 git clone https://github.com/maaz64/voice-ai.git
 cd voice-ai
 ```
 
-### 2. Backend Setup
+### 2. Set up the backend
 
 ```bash
 cd backend
 
-# Create a virtual environment (recommended)
+# Create a virtual environment
 python3 -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+source venv/bin/activate        # Windows: venv\Scripts\activate
 
 # Install dependencies
 pip install -r requirements.txt
 
-# Configure env
+# Create your env file
 cp .env.example .env
-# Edit .env and fill in:
-#   GEMINI_API_KEY=your_gemini_key
-#   HUGGINGFACE_API_TOKEN=your_hf_token  (optional)
+```
 
-# Start the server
+Open `backend/.env` and add your API keys:
+
+```
+GEMINI_API_KEY=your_gemini_key_here
+HUGGINGFACE_API_TOKEN=your_hf_token_here
+```
+
+Start the backend:
+
+```bash
 uvicorn main:app --reload --port 8000
 ```
 
-Backend will be live at: `http://localhost:8000`
-Interactive API docs: `http://localhost:8000/docs`
+Backend runs at → **http://localhost:8000**
+API docs at → **http://localhost:8000/docs**
 
-### 3. Frontend Setup
+### 3. Set up the frontend
+
+Open a **new terminal**, then:
 
 ```bash
 cd frontend
@@ -236,22 +91,26 @@ npm install
 npm run dev
 ```
 
-Frontend will be live at: `http://localhost:3000`
+Frontend runs at → **http://localhost:3000**
+
+### 4. Use the app
+
+Open **http://localhost:3000** in your browser. Record audio or upload a file, pick a provider (Gemini or Hugging Face), and hit transcribe.
 
 ---
 
-## 🌍 Environment Variables
+## Environment Variables
 
-### Backend (`backend/.env`)
+### Backend — `backend/.env`
 
 | Variable | Description | Required |
 |---|---|---|
-| `GEMINI_API_KEY` | Google Gemini API key | ✅ Yes |
-| `HUGGINGFACE_API_TOKEN` | HuggingFace Inference API token | Optional |
-| `MAX_FILE_SIZE_MB` | Max upload size (default: 25) | No |
+| `GEMINI_API_KEY` | Google Gemini API key | Yes |
+| `HUGGINGFACE_API_TOKEN` | Hugging Face API token | Optional |
+| `MAX_FILE_SIZE_MB` | Max upload size in MB (default: 25) | No |
 | `ALLOWED_ORIGINS` | CORS origins (default: `http://localhost:3000`) | No |
 
-### Frontend (`frontend/.env.local`)
+### Frontend — `frontend/.env.local`
 
 | Variable | Description |
 |---|---|
@@ -259,41 +118,31 @@ Frontend will be live at: `http://localhost:3000`
 
 ---
 
-## 📡 API Documentation
+## API
 
 ### `POST /api/transcribe`
 
-Transcribe audio and generate a summary.
+Upload audio and get a transcript + summary.
 
 **Request** — `multipart/form-data`
 
 | Field | Type | Description |
 |---|---|---|
-| `file` | `File` | Audio file (`.mp3`, `.wav`, `.m4a`, `.ogg`, `.webm`) |
-| `provider` | `string` | `"gemini"` or `"huggingface"` (default: `"gemini"`) |
+| `file` | File | Audio file |
+| `provider` | string | `"gemini"` or `"huggingface"` (default: `"gemini"`) |
 
-**Success Response** `200 OK`
+**Response**
 
 ```json
 {
-  "transcript": "Full transcript text here...",
-  "summary": "Concise summary here...",
+  "transcript": "Full transcript text...",
+  "summary": "Concise summary...",
   "duration_seconds": 12.4,
   "provider_used": "gemini"
 }
 ```
 
-**Error Response**
-
-```json
-{
-  "detail": "Error message"
-}
-```
-
 ### `GET /health`
-
-Health check.
 
 ```json
 { "status": "ok", "service": "VoiceScribe AI" }
@@ -301,36 +150,24 @@ Health check.
 
 ---
 
-## 🔑 Get API Keys
-
-| Service | Link |
-|---|---|
-| Google Gemini | [aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey) |
-| Hugging Face | [huggingface.co/settings/tokens](https://huggingface.co/settings/tokens) |
-
----
-
-## 📁 Project Structure
+## Project Structure
 
 ```
 audio-transcript-app/
-├── docker-compose.yml              # Orchestrate both services
 ├── backend/
-│   ├── Dockerfile                  # Backend container config
-│   ├── main.py                     # FastAPI app + CORS
-│   ├── routes/transcribe.py        # POST /api/transcribe
+│   ├── main.py                     # FastAPI app entry point
+│   ├── routes/transcribe.py        # /api/transcribe endpoint
 │   ├── services/
-│   │   ├── gemini_service.py       # Gemini 1.5 Flash
-│   │   └── huggingface_service.py  # Whisper + BART
-│   ├── models/schemas.py           # Pydantic models
-│   ├── utils/audio_utils.py        # Validation + temp file mgmt
+│   │   ├── gemini_service.py       # Gemini transcription + summarization
+│   │   └── huggingface_service.py  # Whisper + BART pipeline
+│   ├── models/schemas.py           # Request/response schemas
+│   ├── utils/audio_utils.py        # File validation helpers
 │   ├── requirements.txt
 │   └── .env.example
 ├── frontend/
-│   ├── Dockerfile                  # Multi-stage frontend build
 │   ├── app/
 │   │   ├── layout.tsx
-│   │   ├── page.tsx                # Main page
+│   │   ├── page.tsx
 │   │   └── globals.css
 │   ├── components/
 │   │   ├── AudioRecorder.tsx
@@ -340,12 +177,35 @@ audio-transcript-app/
 │   │   └── ProcessingStatus.tsx
 │   ├── lib/api.ts
 │   └── .env.local
+├── docker-compose.yml
 ├── .gitignore
 └── README.md
 ```
 
 ---
 
-## 📄 License
+## Docker (Optional)
+
+If you prefer Docker, you can run both services with one command:
+
+```bash
+# Make sure backend/.env exists with your API keys, then:
+docker compose up --build
+```
+
+This starts the backend on port 8000 and frontend on port 3000.
+
+---
+
+## Get API Keys
+
+| Service | Link |
+|---|---|
+| Google Gemini | [aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey) |
+| Hugging Face | [huggingface.co/settings/tokens](https://huggingface.co/settings/tokens) |
+
+---
+
+## License
 
 MIT
