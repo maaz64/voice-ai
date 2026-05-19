@@ -156,7 +156,7 @@ export default function HomePage() {
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-400 text-xs font-semibold mb-4">
             <Zap className="w-3.5 h-3.5" />
-            Powered by Gemini-2.5-flash-lite
+            Powered by Gemini &amp; Hugging Face Models
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-[var(--text-primary)] leading-tight">
             Transcribe &amp; Summarize
@@ -256,6 +256,15 @@ export default function HomePage() {
             className="text-violet-400 hover:underline"
           >
             Google Gemini
+          </a>{" "}
+          &amp;{" "}
+          <a
+            href="https://huggingface.co"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-violet-400 hover:underline"
+          >
+            Hugging Face
           </a>
         </p>
       </footer>
